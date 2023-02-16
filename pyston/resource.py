@@ -13,7 +13,6 @@ from django.core.exceptions import ValidationError
 from django.http.response import HttpResponse, HttpResponseBase
 from django.utils.decorators import classonlymethod
 from django.utils.encoding import force_text
-from django.db.models.fields import DateTimeField
 from django.http.response import Http404
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy as _
@@ -32,7 +31,7 @@ from .exception import (RestException, ConflictException, NotAllowedException, D
                         ResourceNotFoundException, NotAllowedMethodException, DuplicateEntryException,
                         UnsupportedMediaTypeException, MimerDataException, UnauthorizedException,
                         UnprocessableEntity)
-from .forms import ISODateTimeField, RestModelForm, rest_modelform_factory, RestValidationError
+from .forms import RestModelForm, rest_modelform_factory, RestValidationError
 from .utils import coerce_rest_request_method, set_rest_context_to_request, rfs
 from .utils.helpers import str_to_class
 from .serializer import (
@@ -1055,8 +1054,6 @@ class DjangoResource(DjangoResourceMixin, BaseModelResource):
         return force_text(remove_accent(force_text(self.model._meta.verbose_name_plural)))
 
     def formfield_for_dbfield(self, db_field, **kwargs):
-        if isinstance(db_field, DateTimeField):
-            kwargs.update({'form_class': ISODateTimeField})
         return db_field.formfield(**kwargs)
 
     def _get_instance(self, data):
