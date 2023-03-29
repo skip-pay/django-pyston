@@ -179,6 +179,10 @@ class BaseParserModelOrderManager(BaseModelOrderManager):
                 raise RestException(
                     mark_safe(ugettext('Invalid identifier of ordering "{}"').format(ordering_term.source))
                 )
+        if sorters and not [sorter for sorter in sorters if 'pk' in sorter.identifiers]:
+            # If sorters are not empty, it is necessary to add a sorter by pk.
+            # This will reduce the error when sorting by the same values.
+            sorters.append(DjangoSorter(['pk'], sorters[-1].direction))
         return sorters
 
     def _convert_order_terms(self, sorters):
