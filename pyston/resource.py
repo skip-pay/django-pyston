@@ -12,11 +12,11 @@ from django.conf import settings as django_settings
 from django.core.exceptions import ValidationError
 from django.http.response import HttpResponse, HttpResponseBase
 from django.utils.decorators import classonlymethod
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.db.models.fields import DateTimeField
 from django.http.response import Http404
 from django.core.exceptions import ObjectDoesNotExist
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.utils.module_loading import import_string
 
 from functools import update_wrapper
@@ -388,7 +388,7 @@ class BaseResource(PermissionsResourceMixin, metaclass=ResourceMetaClass):
             try:
                 converter = get_converter_from_request(self.request, self.converters, True)
                 self.request.data = self.serializer(self).deserialize(
-                    converter.decode(force_text(self.request.body), resource=self)
+                    converter.decode(force_str(self.request.body), resource=self)
                 )
             except (TypeError, ValueError):
                 raise MimerDataException
@@ -1052,7 +1052,7 @@ class DjangoResource(DjangoResourceMixin, BaseModelResource):
         return self.form_class
 
     def _get_name(self):
-        return force_text(remove_accent(force_text(self.model._meta.verbose_name_plural)))
+        return force_str(remove_accent(force_str(self.model._meta.verbose_name_plural)))
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         if isinstance(db_field, DateTimeField):

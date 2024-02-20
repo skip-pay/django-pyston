@@ -3,7 +3,7 @@ from django.db.models import (
     TextField, CharField, IntegerField, FloatField, SlugField, EmailField, NullBooleanField, UUIDField, JSONField
 )
 from django.db.models.fields.related import ForeignKey, ManyToManyField, ForeignObjectRel
-from django.utils.translation import ugettext
+from django.utils.translation import gettext
 
 from pyston.utils import LOOKUP_SEP
 
@@ -61,7 +61,7 @@ class ListOperatorMixin:
             try:
                 cleaned_values.append(filter.clean_value(value, operator_slug, request))
             except FilterValueError as ex:
-                raise FilterValueError(ugettext('Invalid value inside list at position {}, {}').format(i, ex))
+                raise FilterValueError(gettext('Invalid value inside list at position {}, {}').format(i, ex))
             i += 1
         return cleaned_values
 
@@ -76,7 +76,7 @@ class SimpleListOperatorQuery(ListOperatorMixin, OperatorQuery):
 
     def get_q(self, filter, values, operator_slug, request):
         if not isinstance(values, list):
-            raise FilterValueError(ugettext('Value must be list'))
+            raise FilterValueError(gettext('Value must be list'))
         else:
             values = self._clean_list_values(filter, operator_slug, request, values)
         q = Q(**{
@@ -94,7 +94,7 @@ class RangeOperatorQuery(ListOperatorMixin, OperatorQuery):
 
     def get_q(self, filter, values, operator_slug, request):
         if not isinstance(values, list) or not len(values) != 2:
-            raise FilterValueError(ugettext('Value must be list with two values'))
+            raise FilterValueError(gettext('Value must be list with two values'))
         else:
             values = self._clean_list_values(filter, operator_slug, request, values)
         return Q(**{'{}__range'.format(filter.get_full_filter_key()): values})
@@ -107,7 +107,7 @@ class AllListOperatorQuery(ListOperatorMixin, OperatorQuery):
 
     def get_q(self, filter, values, operator_slug, request):
         if not isinstance(values, list):
-            raise FilterValueError(ugettext('Value must be list'))
+            raise FilterValueError(gettext('Value must be list'))
         else:
             values = self._clean_list_values(filter, operator_slug, request, values)
 
@@ -309,7 +309,7 @@ class ForeignKeyFieldFilter(RelatedFieldFilter):
         try:
             return self.get_last_rel_field(self.field).get_prep_value(value)
         except ValueError:
-            raise FilterValueError(ugettext('Object with this PK cannot be found'))
+            raise FilterValueError(gettext('Object with this PK cannot be found'))
 
 
 class ManyToManyFieldFilter(RelatedFieldFilter):
@@ -330,7 +330,7 @@ class ManyToManyFieldFilter(RelatedFieldFilter):
                 self.field.related_model._meta.get_field(self.field.related_model._meta.pk.name)
             ).get_prep_value(value)
         except ValueError:
-            raise FilterValueError(ugettext('Object with this PK cannot be found'))
+            raise FilterValueError(gettext('Object with this PK cannot be found'))
 
 
 class ForeignObjectRelFilter(RelatedFieldFilter):
@@ -351,7 +351,7 @@ class ForeignObjectRelFilter(RelatedFieldFilter):
                 self.field.related_model._meta.get_field(self.field.related_model._meta.pk.name)
             ).get_prep_value(value)
         except ValueError:
-            raise FilterValueError(ugettext('Object with this PK cannot be found'))
+            raise FilterValueError(gettext('Object with this PK cannot be found'))
 
 
 class SimpleFilterMixin:

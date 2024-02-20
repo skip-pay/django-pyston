@@ -1,7 +1,7 @@
 import base64
 import json
 
-from django.utils.translation import ugettext
+from django.utils.translation import gettext
 
 from pyston.exception import RestException
 from pyston.paginator import BasePaginator
@@ -33,11 +33,11 @@ class DynamoCursorBasedPaginator(BasePaginator):
         elif base.isdigit():
             base_int = int(base)
             if base_int > self.max_base:
-                raise RestException(ugettext('Base must lower or equal to {}').format(self.max_base))
+                raise RestException(gettext('Base must lower or equal to {}').format(self.max_base))
             else:
                 return base_int
         else:
-            raise RestException(ugettext('Base must be natural number or empty'))
+            raise RestException(gettext('Base must be natural number or empty'))
 
     def _get_cursor(self, request):
         cursor = request._rest_context.get('cursor')
@@ -48,7 +48,7 @@ class DynamoCursorBasedPaginator(BasePaginator):
                 ).decode('ascii')
                 return json.loads(cursor)
             except json.JSONDecodeError:
-                raise RestException(ugettext('Invalid next cursor value'))
+                raise RestException(gettext('Invalid next cursor value'))
         else:
             return None
 

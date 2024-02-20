@@ -7,7 +7,7 @@ from datetime import datetime, date
 from decimal import Decimal
 
 from django.conf import settings as django_settings
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.template.loader import get_template
 
 try:
@@ -68,9 +68,9 @@ class CsvGenerator:
         if isinstance(value, float):
             value = ('%.2f' % value).replace('.', ',')
         elif isinstance(value, Decimal):
-            value = force_text(value.quantize(TWOPLACES)).replace('.', ',')
+            value = force_str(value.quantize(TWOPLACES)).replace('.', ',')
         else:
-            value = force_text(value)
+            value = force_str(value)
         return value.replace('&nbsp;', ' ')
 
 
@@ -80,7 +80,7 @@ class StreamCSV:
         self.writer = csv.writer(f, dialect=dialect, **kwargs)
         self.stream = f
         if use_bom:
-            self.stream.write(force_text(codecs.BOM_UTF8))  # BOM for Excel
+            self.stream.write(force_str(codecs.BOM_UTF8))  # BOM for Excel
 
     def writerow(self, row):
         self.writer.writerow(row)
@@ -105,7 +105,7 @@ class TxtGenerator:
                     output_stream.write('{}:\n'.format(header[col]))
                 if isinstance(val, str):
                     val = self._prepare_value(val)
-                output_stream.write('\t'.join(('\t' + force_text(val).lstrip()).splitlines(True)) + '\n\n')
+                output_stream.write('\t'.join(('\t' + force_str(val).lstrip()).splitlines(True)) + '\n\n')
             output_stream.write('---\n')
 
 
@@ -127,7 +127,7 @@ if xlsxwriter:
 
             if header:
                 for col, head in enumerate(header):
-                    ws.write(row, col, force_text(head))
+                    ws.write(row, col, force_str(head))
                 row += 1
 
             for data_row in data:
@@ -163,7 +163,7 @@ if pisa:
                 return ''
 
             pisa.pisaDocument(
-                force_text(
+                force_str(
                     get_template(settings.PDF_EXPORT_TEMPLATE).render(
                         {'pagesize': 'A4', 'headers': header, 'data': data}
                     )

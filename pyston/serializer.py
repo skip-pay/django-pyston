@@ -11,9 +11,9 @@ from django.db.models import Model
 from django.db.models.fields.files import FieldFile
 from django.db.models.query import QuerySet
 from django.utils import formats, timezone
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.utils.html import conditional_escape
-from django.utils.translation import ugettext
+from django.utils.translation import gettext
 
 from chamber.utils import get_class_method
 
@@ -547,14 +547,14 @@ class FileSerializer(Serializer):
 class StringSerializer(Serializer):
 
     def serialize(self, data, serialization_format, allow_tags=False, **kwargs):
-        serialized_string = force_text(data, strings_only=True)
+        serialized_string = force_str(data, strings_only=True)
         return serialized_string if allow_tags or settings.ALLOW_TAGS else conditional_escape(serialized_string)
 
 
 class DefaultSerializer(Serializer):
 
     def serialize(self, data, serialization_format, **kwargs):
-        return force_text(data, strings_only=True)
+        return force_str(data, strings_only=True)
 
 
 class BaseRawVerboseValueSerializer(Serializer):
@@ -608,7 +608,7 @@ class DateTimeSerializer(BaseRawVerboseValueSerializer):
 class BoolSerializer(BaseRawVerboseValueSerializer):
 
     def _get_verbose_value(self, data, **kwargs):
-        return ugettext('Yes') if data else ugettext('No')
+        return gettext('Yes') if data else gettext('No')
 
 
 @register(dict)

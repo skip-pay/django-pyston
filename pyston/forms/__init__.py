@@ -7,8 +7,8 @@ from django import forms
 from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
 from django.http.response import Http404
 from django.forms.models import ModelFormMetaclass, modelform_factory
-from django.utils.translation import ugettext
-from django.utils.encoding import force_text, force_str
+from django.utils.translation import gettext
+from django.utils.encoding import force_str
 
 from chamber.shortcuts import get_object_or_none
 
@@ -189,7 +189,7 @@ class RelatedField:
                 return data[pk_field_name]
             except KeyError:
                 raise RestValidationError(
-                    ugettext('Data must contain primary key: {}').format(pk_field_name), code='invalid_structure'
+                    gettext('Data must contain primary key: {}').format(pk_field_name), code='invalid_structure'
                 )
         else:
             return data
@@ -202,11 +202,11 @@ class RelatedField:
         except RestException as ex:
             raise RestValidationError(ex.message)
         except Http404:
-            raise RestValidationError(ugettext('Object does not exist'), code='invalid_structure')
+            raise RestValidationError(gettext('Object does not exist'), code='invalid_structure')
 
     def _create_or_update_related_object(self, resource, data, via, partial_update):
         if not isinstance(data, dict):
-            raise RestValidationError(ugettext('Data must be object'), code='invalid_structure')
+            raise RestValidationError(gettext('Data must be object'), code='invalid_structure')
 
         try:
             return resource.create_or_update(resource.update_data(data), via, partial_update)
@@ -237,7 +237,7 @@ class RelatedField:
         result = []
         for i, obj_data in enumerate(data):
             if not isinstance(obj_data, dict):
-                obj_data = {resource.pk_field_name: force_text(obj_data)}
+                obj_data = {resource.pk_field_name: force_str(obj_data)}
 
             try:
                 if created_via_field_name:
@@ -276,7 +276,7 @@ class SingleRelatedfieldValidationMixin:
 
         cleaned_data = copy.deepcopy(data)
         if not self._is_allowed_foreign_key and not isinstance(data, dict):
-            raise RestValidationError(ugettext('Invalid format'), code='invalid_structure')
+            raise RestValidationError(gettext('Invalid format'), code='invalid_structure')
 
         resource = self._get_resource(self._get_model(parent_inst), request)
         if not self._is_allowed_foreign_key and resource.pk_field_name in data:
@@ -288,7 +288,7 @@ class MultipleRelatedfieldValidationMixin(SingleRelatedfieldValidationMixin):
 
     def clean(self, data, request, parent_inst):
         if not isinstance(data, (tuple, list)):
-            raise RestValidationError(ugettext('Data must be a collection'), code='invalid_structure')
+            raise RestValidationError(gettext('Data must be a collection'), code='invalid_structure')
 
         errors = RestListError()
 
@@ -300,7 +300,7 @@ class MultipleRelatedfieldValidationMixin(SingleRelatedfieldValidationMixin):
                 if obj_data is None:
                     errors.append(
                         RestDictIndexError(
-                            i, {'error': RestValidationError(ugettext('Invalid format'), code='invalid_structure')}
+                            i, {'error': RestValidationError(gettext('Invalid format'), code='invalid_structure')}
                         )
                     )
             except RestError as ex:
@@ -321,7 +321,7 @@ class MultipleStructuredRelatedfieldValidationMixin:
 
             if 'set' in data and {'remove', 'add'} & set(data.keys()):
                 raise RestValidationError(
-                    ugettext('set cannot be together with add or remove'), code='invalid_structure'
+                    gettext('set cannot be together with add or remove'), code='invalid_structure'
                 )
 
             errors = RestDictError()
@@ -363,14 +363,14 @@ class MultipleStructuredRelatedField(MultipleStructuredRelatedfieldValidationMix
 
     def _remove_related_objects(self, resource, parent_inst, via, data, values):
         errors = RestListError()
-        result = [force_text(val) for val in values]
+        result = [force_str(val) for val in values]
         for i, obj in enumerate(data):
             try:
-                pk = force_text(self._flat_object_to_pk(resource.pk_field_name, obj))
+                pk = force_str(self._flat_object_to_pk(resource.pk_field_name, obj))
                 if pk in result:
                     result.remove(pk)
                 else:
-                    errors.append({'error': ugettext('Object does not exist in selected data'), '_index': i})
+                    errors.append({'error': gettext('Object does not exist in selected data'), '_index': i})
             except RestDictError as ex:
                 errors.append(RestDictIndexError(i, ex))
             except RestError as ex:
@@ -449,7 +449,7 @@ class ReverseSingleField(SingleRelatedfieldValidationMixin, ReverseField):
 
     def _create_or_update(self, resource, parent_inst, related_obj, field_name, via, data, partial_update):
         if not isinstance(data, dict):
-            obj_data = {resource.pk_field_name: force_text(data)}
+            obj_data = {resource.pk_field_name: force_str(data)}
         else:
             obj_data = data.copy()
 

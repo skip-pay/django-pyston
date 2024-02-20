@@ -5,7 +5,7 @@ from chamber.shortcuts import get_object_or_none
 
 from django.db.models import Q
 from django.db.models.expressions import OrderBy
-from django.utils.translation import ugettext
+from django.utils.translation import gettext
 
 from .forms import RestValidationError
 from .exception import RestException
@@ -51,11 +51,11 @@ class BaseModelOffsetBasedPaginator(BasePaginator):
         if offset.isdigit():
             offset_int = int(offset)
             if offset_int > self.max_offset:
-                raise RestException(ugettext('Offset must be lower or equal to {}').format(self.max_offset))
+                raise RestException(gettext('Offset must be lower or equal to {}').format(self.max_offset))
             else:
                 return offset_int
         else:
-            raise RestException(ugettext('Offset must be natural number'))
+            raise RestException(gettext('Offset must be natural number'))
 
     def _get_base(self, qs, request):
         base = request._rest_context.get('base')
@@ -64,11 +64,11 @@ class BaseModelOffsetBasedPaginator(BasePaginator):
         elif base.isdigit():
             base_int = int(base)
             if base_int > self.max_base:
-                raise RestException(ugettext('Base must lower or equal to {}').format(self.max_base))
+                raise RestException(gettext('Base must lower or equal to {}').format(self.max_base))
             else:
                 return base_int
         else:
-            raise RestException(ugettext('Base must be natural number or empty'))
+            raise RestException(gettext('Base must be natural number or empty'))
 
     def _get_next_offset(self, iterable, offset, base):
         return offset + base if len(iterable) > base else None
@@ -201,7 +201,7 @@ class DjangoCursorBasedPaginator(BasePaginator):
             if current_row:
                 qs = qs.filter(self._get_page_filter_kwargs(current_row))
             else:
-                raise RestException(RestValidationError(ugettext('Cursor object was not found')))
+                raise RestException(RestValidationError(gettext('Cursor object was not found')))
         return self._get_page(qs, base)
 
     def _get_base(self, request):
@@ -211,11 +211,11 @@ class DjangoCursorBasedPaginator(BasePaginator):
         elif base.isdigit():
             base_int = int(base)
             if base_int > self.max_base:
-                raise RestException(ugettext('Base must lower or equal to {}').format(self.max_base))
+                raise RestException(gettext('Base must lower or equal to {}').format(self.max_base))
             else:
                 return base_int
         else:
-            raise RestException(ugettext('Base must be natural number or empty'))
+            raise RestException(gettext('Base must be natural number or empty'))
 
     def _get_cursor(self, request):
         return request._rest_context.get('cursor')

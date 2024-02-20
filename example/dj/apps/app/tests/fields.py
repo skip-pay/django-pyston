@@ -3,7 +3,7 @@ import os
 
 from django.conf import settings
 from django.test.utils import override_settings
-from django.utils.translation import ugettext
+from django.utils.translation import gettext
 
 from germanium.decorators import data_consumer
 from germanium.tools.trivials import assert_in, assert_equal, assert_not_equal
@@ -440,7 +440,7 @@ class FieldsTestCase(PystonTestCase):
         assert_in('contract', errors)
         assert_equal(
             errors['contract'],
-            ugettext('Content type cannot be evaluated from input data please send it')
+            gettext('Content type cannot be evaluated from input data please send it')
         )
 
     @data_consumer('get_users_data')
@@ -454,7 +454,7 @@ class FieldsTestCase(PystonTestCase):
         assert_http_bad_request(resp)
         errors = self.deserialize(resp).get('messages', {}).get('errors')
         assert_in('contract', errors)
-        assert_equal(errors['contract']['content'], ugettext('File content must be in base64 format'))
+        assert_equal(errors['contract']['content'], gettext('File content must be in base64 format'))
 
     @data_consumer('get_users_data')
     def test_should_raise_bad_request_if_url_is_not_valid(self, number, data):
@@ -466,7 +466,7 @@ class FieldsTestCase(PystonTestCase):
         assert_http_bad_request(resp)
         errors = self.deserialize(resp).get('messages', {}).get('errors')
         assert_in('contract', errors)
-        assert_equal(errors['contract']['url'], ugettext('Enter a valid URL.'))
+        assert_equal(errors['contract']['url'], gettext('Enter a valid URL.'))
 
     @data_consumer('get_users_data')
     def test_should_raise_bad_request_if_required_items_are_not_provided(self, number, data):
@@ -477,7 +477,7 @@ class FieldsTestCase(PystonTestCase):
         assert_http_bad_request(resp)
         errors = self.deserialize(resp).get('messages', {}).get('errors')
         assert_in('contract', errors)
-        msg = ugettext('File data item must contains {} or {}').format(
+        msg = gettext('File data item must contains {} or {}').format(
                   ', '.join(REQUIRED_ITEMS), ', '.join(REQUIRED_URL_ITEMS)
               )
         assert_equal(errors['contract'], msg)
@@ -493,7 +493,7 @@ class FieldsTestCase(PystonTestCase):
         assert_http_bad_request(resp)
         errors = self.deserialize(resp).get('messages', {}).get('errors')
         assert_in('contract', errors)
-        assert_equal(errors['contract']['url'], ugettext('File is unreachable on the URL address'))
+        assert_equal(errors['contract']['url'], gettext('File is unreachable on the URL address'))
 
     @override_settings(PYSTON_FILE_SIZE_LIMIT=10)
     @data_consumer('get_users_data')
@@ -509,7 +509,7 @@ class FieldsTestCase(PystonTestCase):
         assert_http_bad_request(resp)
         errors = self.deserialize(resp).get('messages', {}).get('errors')
         assert_in('contract', errors)
-        msg = ugettext('Response too large, maximum size is {} bytes').format(pyston_settings.FILE_SIZE_LIMIT)
+        msg = gettext('Response too large, maximum size is {} bytes').format(pyston_settings.FILE_SIZE_LIMIT)
         assert_equal(errors['contract']['url'], msg)
 
     @data_consumer('get_users_data')

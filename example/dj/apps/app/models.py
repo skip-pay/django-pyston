@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models import Count
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from pyston.utils.decorators import order_by, filter_class, filter_by, allow_tags, sorter_class
 from pyston.filters.filters import IntegerFilterMixin

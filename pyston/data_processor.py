@@ -6,7 +6,7 @@ import inspect
 from io import BytesIO
 
 from django.forms.fields import FileField
-from django.utils.translation import ugettext_lazy as _, ugettext
+from django.utils.translation import gettext_lazy as _, gettext
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
@@ -82,7 +82,7 @@ class FileDataPreprocessor(DataProcessor):
     def _validate_not_empty(self, data_item, key, item):
         if not data_item.get(item):
             error = self.errors.get(key, RestDictError())
-            error.update(RestDictError({item: RestValidationError(ugettext('This field is required'))}))
+            error.update(RestDictError({item: RestValidationError(gettext('This field is required'))}))
             self.errors[key] = error
 
     def _get_content_type(self, content_type, filename, file_content):
@@ -106,11 +106,11 @@ class FileDataPreprocessor(DataProcessor):
         content_type = self._get_content_type(content_type, filename, file_content)
         filename = self._get_filename(content_type, filename)
         if not content_type:
-            self.errors[key] = RestValidationError(ugettext(
+            self.errors[key] = RestValidationError(gettext(
                 'Content type cannot be evaluated from input data please send it'
             ))
         elif not filename:
-            self.errors[key] = RestValidationError(ugettext(
+            self.errors[key] = RestValidationError(gettext(
                 'File name cannot be evaluated from input data please send it'
             ))
         else:
@@ -128,7 +128,7 @@ class FileDataPreprocessor(DataProcessor):
             self._process_file_data(data, files, key, data_item, file_content)
         except (TypeError, binascii.Error):
             self.errors[key] = RestDictError({'content': RestValidationError(
-                ugettext('File content must be in base64 format')
+                gettext('File content must be in base64 format')
             )})
 
     def _process_file_data_url_field(self, data, files, key, data_item):
@@ -144,13 +144,13 @@ class FileDataPreprocessor(DataProcessor):
             self._process_file_data(data, files, key, data_item, file_content)
         except RequestDataTooBig:
             self.errors[key] = RestDictError({'url': RestValidationError(
-                ugettext('Response too large, maximum size is {} bytes').format(
+                gettext('Response too large, maximum size is {} bytes').format(
                     pyston_settings.FILE_SIZE_LIMIT
                 ))
             })
         except (RequestException, InvalidResponseStatusCode):
             self.errors[key] = RestDictError({'url': RestValidationError(
-                ugettext('File is unreachable on the URL address')
+                gettext('File is unreachable on the URL address')
             )})
         try:
             url_validator(url)
@@ -177,7 +177,7 @@ class FileDataPreprocessor(DataProcessor):
                     self._process_file_data_url_field(data, files, key, data_item)
             else:
                 self.errors[key] = RestValidationError(
-                    ugettext('File data item must contains {} or {}').format(
+                    gettext('File data item must contains {} or {}').format(
                         ', '.join(REQUIRED_ITEMS), ', '.join(REQUIRED_URL_ITEMS)
                     )
                 )

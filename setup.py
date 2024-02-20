@@ -24,11 +24,11 @@ setup(
         'Topic :: Internet :: WWW/HTTP',
     ],
     install_requires=[
-        'django>=2.2, <4.0',
+        'django>=4.2',
         'defusedxml>=0.6.0',
         'pyparsing==2.4.7',
         'python-mimeparse>=1.6.0',
-        'skip-django-chamber>=0.6.17.2',
+        'skip-django-chamber @ git+https://github.com/skip-pay/django-chamber@tda/chore/django_bump',
         'python-magic>=0.4.27',
     ],
     zip_safe=False
