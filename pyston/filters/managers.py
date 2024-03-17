@@ -198,6 +198,7 @@ class BaseDjangoFilterManager(BaseModelFilterManager):
 
         model_field = get_field_or_none(model, current_identifier)
         model_method = get_method_or_none(model, current_identifier)
+        model_attribute = getattr(model, current_identifier, None)
         model_filter_filter = self._get_default_model_field_filter_class(model_field) if model_field else None
 
         if model_filter_filter and (not suffix or suffix in model_filter_filter.get_suffixes()):
@@ -212,9 +213,9 @@ class BaseDjangoFilterManager(BaseModelFilterManager):
                 identifiers_prefix + [identifiers[0]], identifiers[1:], next_model, next_resource, request,
                 filters_fields_rfs[current_identifier].subfieldset
             )
-        elif model_method:
+        elif model_method or model_attribute:
             return self._get_method_filter(
-                model_method, identifiers_prefix, [current_identifier], identifiers_suffix,
+                model_method or model_attribute, identifiers_prefix, [current_identifier], identifiers_suffix,
                 model, resource, request, filters_fields_rfs
             )
         else:

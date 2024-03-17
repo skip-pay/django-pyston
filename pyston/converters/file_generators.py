@@ -110,7 +110,7 @@ class TxtGenerator:
 
 
 if xlsxwriter:
-    class XlsxGenerator:
+    class XlsxGenerator:  # noqa: F811
 
         def _prepare_value(self, value):
             return value.replace('&nbsp;', ' ')
@@ -147,7 +147,7 @@ if xlsxwriter:
             wb.close()
 
 if pisa:
-    class PdfGenerator:
+    class PdfGenerator:  # noqa: F811
 
         encoding = 'utf-8'
 
