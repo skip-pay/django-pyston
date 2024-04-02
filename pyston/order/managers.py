@@ -147,6 +147,7 @@ class BaseDjangoOrderManager(BaseModelOrderManager):
 
         model_field = get_field_or_none(model, current_identifier)
         model_method = get_method_or_none(model, current_identifier)
+        model_attribute = getattr(model, current_identifier, None)
 
         if model_field and not identifiers_suffix and (not model_field.is_relation or model_field.related_model):
             return DjangoSorter(identifiers_prefix + identifiers, direction)
@@ -157,9 +158,15 @@ class BaseDjangoOrderManager(BaseModelOrderManager):
                 identifiers_prefix + [identifiers[0]], identifiers[1:], direction,
                 next_model, next_resource, request, order_fields_rfs[current_identifier].subfieldset
             )
-        elif model_method and not identifiers_suffix:
+        elif (model_method or model_attribute) and not identifiers_suffix:
             return self._get_sorter_from_method(
-                model_method, identifiers_prefix, identifiers, direction, model, resource, request, order_fields_rfs
+                model_method or model_attribute,
+                identifiers_prefix,
+                identifiers, direction,
+                model,
+                resource,
+                request,
+                order_fields_rfs,
             )
 
 
