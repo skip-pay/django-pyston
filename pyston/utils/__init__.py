@@ -6,7 +6,7 @@ from collections import OrderedDict
 
 from django.template.defaultfilters import lower
 from django.db import models
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 
 from copy import deepcopy
 
@@ -146,7 +146,7 @@ class RestField:
     def __str__(self):
         if self.subfieldset:
             return '{}({})'.format(self.name, self.subfieldset)
-        return force_text(self.name)
+        return force_str(self.name)
 
 
 class RestFieldset:
@@ -257,7 +257,7 @@ class RestFieldset:
         return self.__class__(*map(deepcopy, self.fields))
 
     def __str__(self):
-        return ','.join(map(force_text, self.fields))
+        return ','.join(map(force_str, self.fields))
 
     def __add__(self, rest_fieldset):
         a_rfs = deepcopy(self)

@@ -3,7 +3,7 @@ import re
 import pyparsing as pp
 
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext
+from django.utils.translation import gettext
 
 from .utils import LogicalOperatorSlug, OperatorSlug
 
@@ -181,7 +181,7 @@ class DefaultFilterParser(FilterParser):
             )
         except pp.ParseException:
             raise FilterParserError(
-                mark_safe(ugettext('Invalid filter value "{}"').format(input))
+                mark_safe(gettext('Invalid filter value "{}"').format(input))
             )
 
 

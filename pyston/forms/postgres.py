@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.contrib.postgres.utils import prefix_validation_error
 from django.contrib.postgres.forms.array import SimpleArrayField
-from django.utils.translation import ugettext
+from django.utils.translation import gettext
 
 
 class RestSimpleArrayField(SimpleArrayField):
@@ -29,7 +29,7 @@ class RestSimpleArrayField(SimpleArrayField):
             if errors:
                 raise ValidationError(errors)
         else:
-            raise ValidationError(ugettext('Enter a list.'))
+            raise ValidationError(gettext('Enter a list.'))
         return values
 
     def clean(self, value):

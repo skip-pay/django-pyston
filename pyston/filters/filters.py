@@ -2,8 +2,8 @@ from decimal import Decimal, InvalidOperation
 
 from django.core.validators import validate_ipv4_address, validate_ipv46_address
 from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext
+from django.utils.translation import gettext_lazy as _
 from django.utils.timezone import make_aware
 
 from dateutil.parser import DEFAULTPARSER
@@ -160,7 +160,7 @@ class BooleanFilterMixin:
         elif value in {'0', '1'}:
             return value == '1'
         else:
-            raise FilterValueError(ugettext('Value must be boolean'))
+            raise FilterValueError(gettext('Value must be boolean'))
 
 
 class NullBooleanFilterMixin(BooleanFilterMixin):
@@ -192,7 +192,7 @@ class IntegerFilterMixin:
         try:
             return int(value)
         except (ValueError, TypeError):
-            raise FilterValueError(ugettext('Value must be integer'))
+            raise FilterValueError(gettext('Value must be integer'))
 
 
 class FloatFilterMixin:
@@ -203,7 +203,7 @@ class FloatFilterMixin:
         try:
             return float(value)
         except (ValueError, TypeError):
-            raise FilterValueError(ugettext('Value must be float'))
+            raise FilterValueError(gettext('Value must be float'))
 
 
 class DecimalFilterMixin:
@@ -214,7 +214,7 @@ class DecimalFilterMixin:
         try:
             return Decimal(value)
         except InvalidOperation:
-            raise FilterValueError(ugettext('Value must be decimal'))
+            raise FilterValueError(gettext('Value must be decimal'))
 
 
 class IPAddressFilterMixin:
@@ -227,7 +227,7 @@ class IPAddressFilterMixin:
             try:
                 validate_ipv4_address(value)
             except ValidationError:
-                raise FilterValueError(ugettext('Value must be in format IPv4.'))
+                raise FilterValueError(gettext('Value must be in format IPv4.'))
         return value
 
 
@@ -241,7 +241,7 @@ class GenericIPAddressFilterMixin:
             try:
                 validate_ipv46_address(value)
             except ValidationError:
-                raise FilterValueError(ugettext('Value must be in format IPv4 or IPv6.'))
+                raise FilterValueError(gettext('Value must be in format IPv4 or IPv6.'))
         return value
 
 
@@ -256,7 +256,7 @@ class DateFilterMixin:
         value = value[0] if isinstance(value, tuple) else value
 
         if value is None:
-            raise FilterValueError(ugettext('Value cannot be parsed to partial datetime'))
+            raise FilterValueError(gettext('Value cannot be parsed to partial datetime'))
         else:
             return value
 
@@ -264,14 +264,14 @@ class DateFilterMixin:
         try:
             return int(value)
         except ValueError:
-            raise FilterValueError(ugettext('Value must be integer'))
+            raise FilterValueError(gettext('Value must be integer'))
 
     def _clean_datetime(self, value):
         try:
             datetime_value = DEFAULTPARSER.parse(value, dayfirst='-' not in value)
             return make_aware(datetime_value, is_dst=True) if datetime_value.tzinfo is None else datetime_value
         except ValueError:
-            raise FilterValueError(ugettext('Value must be in format ISO 8601.'))
+            raise FilterValueError(gettext('Value must be in format ISO 8601.'))
 
     def clean_value(self, value, operator_slug, request):
         suffix = self.identifiers_suffix[0] if self.identifiers_suffix else None

@@ -9,7 +9,7 @@ from defusedxml import ElementTree as ET
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http.response import HttpResponseBase
 from django.template.loader import get_template
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.utils.xmlutils import SimplerXMLGenerator
 from django.utils.module_loading import import_string
 from django.utils.html import format_html
@@ -175,7 +175,7 @@ class XmlConverter(Converter):
                 self._to_xml(xml, value)
                 xml.endElement(key)
         else:
-            xml.characters(force_text(data))
+            xml.characters(force_str(data))
 
     def _encode(self, data, **kwargs):
         if data is not None:
@@ -287,7 +287,7 @@ class GeneratorConverter(Converter):
         elif is_collection(value):
             return self._render_iterable(value, first)
         else:
-            return force_text(value)
+            return force_str(value)
 
     def _get_value_from_row(self, data, field):
         return self.render_value(self._get_recursive_value_from_row(data, field.key_path) or '')
@@ -306,7 +306,7 @@ class GeneratorConverter(Converter):
                           **kwargs):
         fieldset = FieldsetGenerator(
             resource,
-            force_text(requested_fields) if requested_fields is not None else None,
+            force_str(requested_fields) if requested_fields is not None else None,
             direct_serialization=direct_serialization
         ).generate()
         self.generator_class().generate(

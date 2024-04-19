@@ -1,7 +1,7 @@
 from django.db.models import Q
 from django.core.exceptions import FieldDoesNotExist
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext
+from django.utils.translation import gettext
 
 from pyston.exception import RestException
 from pyston.utils import rfs, LOOKUP_SEP
@@ -261,13 +261,13 @@ class BaseParserModelFilterManager(BaseModelFilterManager):
     parsers = [DefaultFilterParser(), QueryStringFilterParser()]
 
     def _logical_conditions_and(self, condition_a, condition_b):
-        raise RestException(ugettext('More filter terms combination are not supported'))
+        raise RestException(gettext('More filter terms combination are not supported'))
 
     def _logical_conditions_or(self, condition_a, condition_b):
-        raise RestException(ugettext('More filter terms combination are not supported'))
+        raise RestException(gettext('More filter terms combination are not supported'))
 
     def _logical_conditions_negation(self, condition):
-        raise RestException(ugettext('Filter term negation are not supported'))
+        raise RestException(gettext('Filter term negation are not supported'))
 
     def _convert_logical_conditions(self, condition, resource, request):
         """
@@ -294,15 +294,15 @@ class BaseParserModelFilterManager(BaseModelFilterManager):
                 )
             except FilterIdentifierError:
                 raise RestException(
-                    mark_safe(ugettext('Invalid identifier of condition "{}"').format(condition.source))
+                    mark_safe(gettext('Invalid identifier of condition "{}"').format(condition.source))
                 )
             except FilterValueError as ex:
                 raise RestException(
-                    mark_safe(ugettext('Invalid value of condition "{}". {}').format(condition.source, ex))
+                    mark_safe(gettext('Invalid value of condition "{}". {}').format(condition.source, ex))
                 )
             except OperatorFilterError:
                 raise RestException(
-                    mark_safe(ugettext('Invalid operator of condition "{}"').format(condition.source))
+                    mark_safe(gettext('Invalid operator of condition "{}"').format(condition.source))
                 )
 
     def _is_required_distinct(self, qs, q):

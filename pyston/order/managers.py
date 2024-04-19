@@ -1,5 +1,5 @@
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext
+from django.utils.translation import gettext
 
 from pyston.exception import RestException
 from pyston.utils import rfs, LOOKUP_SEP
@@ -184,7 +184,7 @@ class BaseParserModelOrderManager(BaseModelOrderManager):
                 sorters.append(self.get_sorter(ordering_term.identifiers, ordering_term.direction, resource, request))
             except OrderIdentifierError:
                 raise RestException(
-                    mark_safe(ugettext('Invalid identifier of ordering "{}"').format(ordering_term.source))
+                    mark_safe(gettext('Invalid identifier of ordering "{}"').format(ordering_term.source))
                 )
         return sorters
 
