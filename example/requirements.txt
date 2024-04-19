@@ -13,8 +13,8 @@ pynamodb==5.3.3
 pytz==2020.5
 reportlab==3.6.13
 responses==0.12.1
-skip-django-germanium @ git+https://github.com/skip-pay/germanium@tda/chore/django_bump
-skip-pydjamodb @ git+https://github.com/skip-pay/pydjamodb@tda/chore/django_bump
+skip-django-germanium==2.4.0
+skip-pydjamodb==0.1.0
 xhtml2pdf==0.2.11
 XlsxWriter==0.7.7
 -e ../
